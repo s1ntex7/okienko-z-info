@@ -1,7 +1,8 @@
-import React from 'react';
-import { Users, Map, Swords, Trophy, Target, ArrowRight, BarChart, Hexagon, Users2, Send } from 'lucide-react';
+import React, { useState } from 'react';
+import { Users, Map, Swords, Trophy, Target, ArrowRight, BarChart, Hexagon, Users2, Send, Crown, Shield, Handshake, TrendingUp, Flame } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
-// --- DANE ---
+// --- DANE Gracza ---
 const playerData = {
   nick: "ALEKMISTRZSTRZELA",
   stats: [
@@ -19,20 +20,77 @@ const playerData = {
   }
 };
 
-// ============================================================================
-// WERSJA 1: MINIMALISTYCZNY SZWAJCARSKI (Premium SaaS Vibe)
-// Czystem jasne tła, perfekcyjne proporcje, cienkie linie, ogromna typografia
-// ============================================================================
+// --- DANE Rankingów ---
+const clubsData = {
+  official: {
+    title: "Top Kluby",
+    unit: "TBR",
+    buttonText: "Ranking TBR Drużyn",
+    list: [
+      { id: "c1", rank: 1, tag: "[1505]", name: "1505", points: "10 030" },
+      { id: "c2", rank: 2, tag: "[POLI]", name: "pOLI", points: "10 011" },
+      { id: "c3", rank: 3, tag: "[CIUL]", name: "The Ciule", points: "10 000" }
+    ]
+  },
+  friendly: {
+    title: "Najlepsi w Sparingach",
+    unit: "PKT",
+    buttonText: "Ranking PKT Drużyn",
+    list: [
+      { id: "c4", rank: 1, tag: "[PATO]", name: "Pato Squad", points: "4 502" },
+      { id: "c2", rank: 2, tag: "[POLI]", name: "pOLI", points: "4 200" },
+      { id: "c5", rank: 3, tag: "[FUN]", name: "Just For Fun", points: "3 890" }
+    ]
+  }
+};
+
+const scorersData = {
+  total: {
+    title: "Gole",
+    unit: "GOLI",
+    list: [
+      { id: "s1", rank: 1, country: "pl", name: "alicja", tag: "[CIUL]", value: "305" },
+      { id: "s2", rank: 2, country: "pl", name: "alekmistrzstrzela", tag: "[POLI]", value: "14", isCurrentUser: true },
+      { id: "s3", rank: 3, country: "pl", name: "2112adobe2", tag: "[1505]", value: "7" }
+    ]
+  },
+  avg: {
+    title: "Średnia z Meczu",
+    unit: "GOLI",
+    list: [
+      { id: "s4", rank: 1, country: "pl", name: "proGamer", tag: "[PRO]", value: "3.2", matches: 10, totalGoals: 32 },
+      { id: "s2", rank: 2, country: "pl", name: "alekmistrzstrzela", tag: "[POLI]", value: "2.1", isCurrentUser: true, matches: 15, totalGoals: 31 },
+      { id: "s1", rank: 3, country: "pl", name: "alicja", tag: "[CIUL]", value: "1.8", matches: 42, totalGoals: 75 }
+    ]
+  },
+  max: {
+    title: "Najwięcej w Meczu",
+    unit: "GOLI",
+    list: [
+      { id: "s1", rank: 1, country: "pl", name: "alicja", tag: "[CIUL]", value: "12" },
+      { id: "s5", rank: 2, country: "pl", name: "destroyer", tag: "[BOOM]", value: "8" },
+      { id: "s2", rank: 3, country: "pl", name: "alekmistrzstrzela", tag: "[POLI]", value: "5", isCurrentUser: true }
+    ]
+  }
+};
+
 export default function App() {
+  const [clubTab, setClubTab] = useState<'official' | 'friendly'>('official');
+  const [scorerTab, setScorerTab] = useState<'total' | 'avg' | 'max'>('total');
+
+  const currentClubData = clubsData[clubTab];
+  const currentScorerData = scorersData[scorerTab];
+
   return (
-    <div className="min-h-screen flex flex-col font-sans transition-colors duration-500 bg-[#E5E5E5] text-neutral-900">
-      <main className="flex-1 p-4 md:p-8 lg:p-12 xl:p-16 flex items-center justify-center overflow-x-hidden">
-        <div className="max-w-[90rem] w-full mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 h-full flex flex-col justify-center">
+    <div className="min-h-screen flex flex-col font-sans transition-colors duration-500 bg-[#E5E5E5] text-neutral-900 pb-12">
+      <main className="flex-1 p-4 md:p-8 lg:p-12 xl:p-16 flex flex-col items-center justify-start overflow-x-hidden pt-8 md:pt-16">
+        <div className="max-w-[90rem] w-full mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 flex flex-col gap-8">
           
+          {/* --- GŁÓWNY PANEL GRACZA --- */}
           <div className="bg-[#FAFAFA] rounded-[2.5rem] p-8 lg:p-12 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.05)] border border-neutral-200/60 w-full">
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-12">
               
-              {/* Kolumna lewa - Stats */}
+              {/* Kolumna lewa - Profil i Statystyki */}
               <div className="space-y-12 flex flex-col h-full">
                 <header className="flex items-center gap-6">
                   <div className="w-20 h-20 rounded-full bg-neutral-900 flex items-center justify-center text-white shrink-0 shadow-sm">
@@ -134,9 +192,175 @@ export default function App() {
             </div>
           </div>
 
+          {/* --- TABELE RANKINGOWE --- */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            {/* Top Kluby Tabela */}
+            <div className="bg-[#FAFAFA] rounded-3xl p-8 lg:p-10 border border-neutral-200/60 shadow-sm flex flex-col">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-1">TBR Ranking</p>
+                  <motion.h3 
+                    key={clubTab}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-3xl font-semibold tracking-tight text-neutral-900"
+                  >
+                    {currentClubData.title}
+                  </motion.h3>
+                </div>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setClubTab('official')}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${clubTab === 'official' ? 'bg-amber-50 text-amber-500' : 'bg-neutral-100 text-neutral-400 hover:text-neutral-600'}`}
+                    title="Mecze Oficjalne (TBR)"
+                  >
+                    <shield className="w-5 h-5 hidden" />
+                    <Crown className="w-6 h-6" />
+                  </button>
+                  <button 
+                    onClick={() => setClubTab('friendly')}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${clubTab === 'friendly' ? 'bg-blue-50 text-blue-500' : 'bg-neutral-100 text-neutral-400 hover:text-neutral-600'}`}
+                    title="Mecze Towarzyskie"
+                  >
+                    <Handshake className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex-1 min-h-[260px]">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={clubTab}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {currentClubData.list.map((club, i) => (
+                      <div key={club.id} className={`flex justify-between items-center py-5 ${i !== currentClubData.list.length - 1 ? 'border-b border-neutral-200/60' : ''} group`}>
+                        <div className="flex items-center gap-4">
+                          <div className="w-8 font-semibold text-neutral-400">#{club.rank}</div>
+                          <div>
+                            <div className="mb-0.5">
+                              <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-widest">{club.tag}</span>
+                            </div>
+                            <div className="text-lg font-semibold text-neutral-900">{club.name}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className={`text-3xl font-light tracking-tighter ${club.rank === 1 ? 'text-amber-500 font-medium' : 'text-neutral-900'}`}>{club.points}</div>
+                          <div className="text-[10px] font-semibold text-neutral-400 uppercase tracking-widest">{currentClubData.unit}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              <button className="w-full mt-8 py-4 text-sm font-semibold bg-white border border-neutral-200 rounded-xl text-neutral-900 hover:bg-neutral-50 transition-colors">
+                {currentClubData.buttonText}
+              </button>
+            </div>
+
+            {/* Top Strzelcy Tabela */}
+            <div className="bg-[#FAFAFA] rounded-3xl p-8 lg:p-10 border border-neutral-200/60 shadow-sm flex flex-col">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-1">Top Strzelcy</p>
+                  <motion.h3 
+                    key={scorerTab}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-3xl font-semibold tracking-tight text-neutral-900 uppercase"
+                  >
+                    {currentScorerData.title}
+                  </motion.h3>
+                </div>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setScorerTab('total')}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${scorerTab === 'total' ? 'bg-amber-50 text-amber-500' : 'bg-neutral-100 text-neutral-400 hover:text-neutral-600'}`}
+                    title="Całkowita liczba goli"
+                  >
+                    <Target className="w-6 h-6" />
+                  </button>
+                  <button 
+                    onClick={() => setScorerTab('avg')}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${scorerTab === 'avg' ? 'bg-blue-50 text-blue-500' : 'bg-neutral-100 text-neutral-400 hover:text-neutral-600'}`}
+                    title="Średnia goli na mecz"
+                  >
+                    <TrendingUp className="w-6 h-6" />
+                  </button>
+                  <button 
+                    onClick={() => setScorerTab('max')}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${scorerTab === 'max' ? 'bg-red-50 text-red-500' : 'bg-neutral-100 text-neutral-400 hover:text-neutral-600'}`}
+                    title="Najwięcej goli w jednym meczu"
+                  >
+                    <Flame className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex-1 min-h-[260px]">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={scorerTab}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {currentScorerData.list.map((scorer, i) => (
+                      <div key={scorer.id} className={`flex justify-between items-center py-5 ${i !== currentScorerData.list.length - 1 ? 'border-b border-neutral-200/60' : ''} group`}>
+                        <div className="flex items-center gap-4">
+                          <div className={`w-6 font-semibold text-xl ${scorer.rank === 1 ? 'text-amber-500' : 'text-neutral-400'}`}>{scorer.rank}.</div>
+                          <div>
+                            <div className="flex items-center gap-2 mb-0.5">
+                              {/* Lepsza flaga PL */}
+                              <div className="w-5 h-3.5 flex flex-col rounded-[2px] overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.1)] border border-neutral-200/80 shrink-0">
+                                 <div className="bg-white flex-1" />
+                                 <div className="bg-[#DC143C] flex-1" />
+                              </div>
+                              <span className="text-lg font-semibold text-neutral-900">{scorer.name}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-widest">{scorer.tag}</span>
+                              {/* @ts-ignore */}
+                              {scorer.matches && (
+                                <>
+                                  <span className="w-1 h-1 rounded-full bg-neutral-300" />
+                                  <span className="text-[10px] font-medium text-neutral-500">{/* @ts-ignore */}{scorer.matches} meczy</span>
+                                  <span className="w-1 h-1 rounded-full bg-neutral-300" />
+                                  <span className="text-[10px] font-medium text-neutral-500">{/* @ts-ignore */}{scorer.totalGoals} goli</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className={`text-3xl font-light tracking-tighter 
+                            ${scorer.rank === 1 ? 'text-amber-500 font-medium' : 
+                              scorer.isCurrentUser ? 'text-blue-500 font-medium' : 'text-neutral-900'}
+                          `}>
+                            {scorer.value}
+                          </div>
+                          <div className="text-[10px] font-semibold text-neutral-400 uppercase tracking-widest">{currentScorerData.unit}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              <button className="w-full mt-8 py-4 text-sm font-semibold bg-white border border-neutral-200 rounded-xl text-neutral-900 hover:bg-neutral-50 transition-colors flex items-center justify-center gap-2">
+                Pełna Tabela <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+          </div>
         </div>
       </main>
     </div>
   );
 }
-
