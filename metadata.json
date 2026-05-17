@@ -1,0 +1,8 @@
+{
+  "name": "Gaming Dashboard UI",
+  "description": "Trzy warianty nowoczesnego panelu gracza do gry multiplayer ze statystykami i zarządzaniem klubem.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
