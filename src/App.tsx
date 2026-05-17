@@ -215,7 +215,7 @@ export default function App() {
                     className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${clubTab === 'official' ? 'bg-amber-50 text-amber-500' : 'bg-neutral-100 text-neutral-400 hover:text-neutral-600'}`}
                     title="Mecze Oficjalne (TBR)"
                   >
-                    <shield className="w-5 h-5 hidden" />
+                    <Shield className="w-5 h-5 hidden" />
                     <Crown className="w-6 h-6" />
                   </button>
                   <button 
