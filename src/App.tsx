@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Map, Swords, Trophy, Target, ArrowRight, BarChart, Hexagon, Users2, Send, Crown, Shield, Handshake, TrendingUp, Flame } from 'lucide-react';
+import { Users, Map, Swords, Trophy, Target, ArrowRight, BarChart, Hexagon, Users2, Send, Crown, Shield, Handshake, TrendingUp, Flame, Search, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 // --- DANE Gracza ---
@@ -73,6 +73,14 @@ const scorersData = {
     ]
   }
 };
+
+const fullRankingData = [
+  { rank: 1, avatarStr: "AL", avatarType: "text", avatarBg: "bg-neutral-100 text-neutral-600", name: "alicja", tag: "[CIUL] THE CIULE", matches: 107, goals: 305, assists: 1, mvps: 103, points: "460.2" },
+  { rank: 2, avatarStr: "A", avatarType: "text", avatarBg: "bg-rose-500 text-white", name: "alekmistrzstrzela", tag: "[POLI] POLI", matches: 21, goals: 14, assists: 0, mvps: 21, points: "45.5" },
+  { rank: 3, avatarStr: "21", avatarType: "text", avatarBg: "bg-neutral-100 text-neutral-600", name: "2112adobe2", tag: "[1505] 1505", matches: 21, goals: 7, assists: 3, mvps: 7, points: "19.6" },
+  { rank: 4, avatarStr: "", avatarType: "icon", avatarBg: "bg-blue-400 text-white", name: "2112chatgpt", tag: "BEZ KLUBU", matches: 1, goals: 4, assists: 0, mvps: 1, points: "5.5" },
+  { rank: 5, avatarStr: "404", avatarType: "text", avatarBg: "bg-black text-rose-500 font-black", name: "johnycraine", tag: "[2112] 2112", matches: 1, goals: 1, assists: 0, mvps: 1, points: "2.5" },
+];
 
 export default function App() {
   const [clubTab, setClubTab] = useState<'official' | 'friendly'>('official');
@@ -358,6 +366,141 @@ export default function App() {
               </button>
             </div>
 
+          </div>
+
+          {/* --- DETAILED RANKING TABLE --- */}
+          <div className="bg-[#FAFAFA] rounded-[2.5rem] p-8 lg:p-12 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.05)] border border-neutral-200/60 w-full mt-4 flex flex-col">
+            
+            {/* Header / Filters */}
+            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mb-8">
+              
+              {/* Left group */}
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex bg-neutral-100 rounded-full p-1 border border-neutral-200/60">
+                  <button className="px-6 py-2.5 bg-blue-600 text-white rounded-full text-sm font-medium tracking-wide shadow-sm">ZAWODNICY</button>
+                  <button className="px-6 py-2.5 text-neutral-500 hover:text-neutral-900 rounded-full text-sm font-medium tracking-wide transition-colors">DRUŻYNY</button>
+                </div>
+                <button className="flex items-center gap-2 px-5 py-2.5 bg-white border border-neutral-200/80 rounded-full text-xs font-semibold text-neutral-600 hover:bg-neutral-50 shadow-sm transition-colors uppercase tracking-widest">
+                  <CheckCircle2 className="w-4 h-4 text-neutral-400" /> Wszystkie
+                </button>
+              </div>
+              
+              {/* Middle group */}
+              <div className="flex flex-wrap items-center gap-1 xl:flex-1 xl:justify-center">
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-full text-[10px] font-semibold tracking-widest leading-none shadow-sm h-8 flex items-center">THE RANKING</button>
+                <button className="px-4 py-2 text-neutral-500 hover:text-neutral-900 rounded-full text-[10px] font-semibold tracking-widest leading-none h-8 flex items-center transition-colors">GOLE</button>
+                <button className="px-4 py-2 text-neutral-500 hover:text-neutral-900 rounded-full text-[10px] font-semibold tracking-widest leading-none h-8 flex items-center transition-colors">ASYSTY</button>
+                <button className="px-4 py-2 text-neutral-500 hover:text-neutral-900 rounded-full text-[10px] font-semibold tracking-widest leading-none h-8 flex items-center transition-colors">MVP</button>
+                <button className="px-4 py-2 text-neutral-500 hover:text-neutral-900 rounded-full text-[10px] font-semibold tracking-widest leading-none h-8 flex items-center transition-colors">KM</button>
+                <button className="px-4 py-2 text-neutral-500 hover:text-neutral-900 rounded-full text-[10px] font-semibold tracking-widest leading-none h-8 flex items-center transition-colors">G/M</button>
+                <button className="px-4 py-2 text-neutral-500 hover:text-neutral-900 rounded-full text-[10px] font-semibold tracking-widest leading-none h-8 flex items-center transition-colors">A/M</button>
+                <button className="px-4 py-2 text-neutral-500 hover:text-neutral-900 rounded-full text-[10px] font-semibold tracking-widest leading-none h-8 flex items-center transition-colors">KM/M</button>
+                <div className="w-[1px] h-4 bg-neutral-200 mx-2 hidden md:block"></div>
+                <button className="px-4 py-2 text-neutral-500 hover:text-neutral-900 rounded-full text-[10px] font-semibold tracking-widest leading-none h-8 flex items-center gap-2 transition-colors">
+                  <BarChart className="w-3.5 h-3.5" /> STATYSTYKI
+                </button>
+              </div>
+
+              {/* Right group */}
+              <div className="flex flex-wrap items-center gap-4">
+                 <button className="px-6 py-2.5 bg-white border border-neutral-200/80 rounded-full text-xs font-semibold text-neutral-600 hover:bg-neutral-50 shadow-sm transition-colors uppercase tracking-widest">
+                  Normal
+                </button>
+                <div className="relative">
+                  <Search className="w-4 h-4 text-neutral-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                  <input type="text" placeholder="Szukaj zawodnika lub klubu" className="w-[280px] pl-10 pr-4 py-2.5 bg-white border border-neutral-200/80 rounded-full text-sm font-medium focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-sm" />
+                </div>
+              </div>
+            </div>
+
+            {/* Status Header */}
+            <div className="mb-6">
+              <p className="text-[11px] font-semibold text-blue-600 uppercase tracking-widest">
+                <span className="text-neutral-500 mr-2">Zakres statystyk:</span> Wszystkie Zapisane Mecze
+              </p>
+            </div>
+
+            {/* Table */}
+            <div className="w-full overflow-x-auto">
+              <table className="w-full min-w-[900px] border-collapse">
+                <thead>
+                  <tr className="border-b-2 border-neutral-100">
+                    <th className="py-4 px-4 text-left text-[10px] font-semibold text-neutral-400 uppercase tracking-widest w-20">Poz</th>
+                    <th className="py-4 px-4 text-left text-[10px] font-semibold text-neutral-400 uppercase tracking-widest">Zawodnik</th>
+                    <th className="py-4 px-4 text-left text-[10px] font-semibold text-neutral-400 uppercase tracking-widest w-48 xl:w-72">Klub</th>
+                    <th className="py-4 px-4 text-center text-[10px] font-semibold text-neutral-400 uppercase tracking-widest w-24">Mecze</th>
+                    <th className="py-4 px-4 text-center text-[10px] font-semibold text-neutral-400 uppercase tracking-widest w-24">Gole</th>
+                    <th className="py-4 px-4 text-center text-[10px] font-semibold text-neutral-400 uppercase tracking-widest w-24">Asysty</th>
+                    <th className="py-4 px-4 text-center text-[10px] font-semibold text-neutral-400 uppercase tracking-widest w-24">MVP</th>
+                    <th className="py-4 px-6 text-right text-[10px] font-semibold text-neutral-400 uppercase tracking-widest w-44">The Ranking</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {fullRankingData.map((player) => (
+                    <tr key={player.rank} className={`border-b border-neutral-100 hover:bg-neutral-50/50 transition-colors ${player.rank === 1 ? 'bg-amber-50/30 hover:bg-amber-50/50' : ''}`}>
+                      {/* POZ */}
+                      <td className="py-5 px-4 font-light text-left pl-4">
+                        <span className={`text-[40px] font-light tracking-tighter ${
+                          player.rank === 1 ? 'text-amber-500' :
+                          player.rank === 2 ? 'text-neutral-400' :
+                          player.rank === 3 ? 'text-orange-500' :
+                          'text-neutral-800'
+                        }`}>
+                          {player.rank}.
+                        </span>
+                      </td>
+                      {/* ZAWODNIK */}
+                      <td className="py-5 px-4">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${player.avatarBg}`}>
+                            {player.avatarType === 'icon' ? <Users className="w-5 h-5" /> : <span className="font-medium text-lg">{player.avatarStr}</span>}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              {/* Flaga PL */}
+                              <div className="w-5 h-3.5 flex flex-col rounded-[2px] overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.1)] border border-neutral-100/50 shrink-0">
+                                <div className="bg-white flex-1" />
+                                <div className="bg-[#DC143C] flex-1" />
+                              </div>
+                              <span className="text-lg font-semibold text-neutral-900">{player.name}</span>
+                            </div>
+                            <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-widest">UNRANKED</span>
+                          </div>
+                        </div>
+                      </td>
+                      {/* KLUB */}
+                      <td className="py-5 px-4">
+                        <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-widest">{player.tag}</span>
+                      </td>
+                      {/* MECZE, GOLE, ASYSTY, MVP */}
+                      <td className="py-5 px-4 text-center text-[17px] font-medium text-neutral-900">{player.matches}</td>
+                      <td className="py-5 px-4 text-center text-[17px] font-medium text-neutral-900">{player.goals}</td>
+                      <td className="py-5 px-4 text-center text-[17px] font-medium text-neutral-900">{player.assists}</td>
+                      <td className="py-5 px-4 text-center text-[17px] font-medium text-neutral-900">{player.mvps}</td>
+                      {/* THE RANKING */}
+                      <td className="py-5 px-6 text-right">
+                        <span className={`text-[42px] font-light tracking-tighter ${player.rank === 1 ? 'text-amber-500' : 'text-blue-500'}`}>
+                          {player.points}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-between items-center mt-6 pt-6 border-t border-neutral-100">
+              <div className="flex items-center gap-2 text-[10px] font-semibold text-neutral-500 uppercase tracking-widest">
+                <Users2 className="w-3.5 h-3.5" /> Wyniki: 5
+              </div>
+              <div className="text-[10px] font-semibold text-neutral-400 uppercase tracking-widest">
+                Ukryte seed/test: 8
+              </div>
+              <div className="text-[10px] font-semibold text-blue-500 uppercase tracking-widest">
+                Na żywo
+              </div>
+            </div>
           </div>
         </div>
       </main>
